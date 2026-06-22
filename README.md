@@ -78,7 +78,7 @@ npm run dev           # Starts on port 4000
 **Seed credentials** (password: `password123`)
 | Role | Phone |
 |---|---|
-| CM (Rekha Gupta) | 9999900001 |
+| CM | 9999900001 |
 | CMO Team | 9999900002 |
 | Super Admin | 9999900003 |
 | Dept Admin (DJB) | 9999900004 |
