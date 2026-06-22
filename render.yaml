@@ -1,0 +1,55 @@
+services:
+  # Backend API — Express + TypeScript + Mongoose
+  # Free tier: 750 hrs/month (enough for 24/7), 15-min sleep after inactivity,
+  # 30-60s cold start on the next request. No credit card required.
+  #
+  # IMPORTANT: keep the service awake using a FREE EXTERNAL pinger, not
+  # Render's own Cron Job product — Render's Cron Jobs carry a minimum
+  # $1/month charge per job, billed by the second, even on the "free" plan.
+  # That defeats the zero-cost goal. Use cron-job.org or UptimeRobot
+  # (both genuinely free, no card) to GET /api/health every 10 minutes.
+  # See the README "Render deployment" section for exact setup steps.
+  - type: web
+    name: delhi-grievance-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: MONGODB_URI
+        sync: false        # set manually in Render dashboard — your Atlas connection string
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false        # set manually — free key from console.groq.com
+      - key: GROQ_MODEL
+        value: llama-3.3-70b-versatile
+      - key: GROQ_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: MCD311_API_BASE_URL
+        sync: false        # leave blank — system runs in graceful mock mode
+      - key: MCD311_API_KEY
+        sync: false
+      - key: PORT
+        value: 4000
+      - key: NODE_VERSION
+        value: 20.18.0
+
+  # Frontend — Next.js. Render free Static Site has NO sleep policy
+  # (unlike free web services), so this is the better free-tier choice
+  # for the UI even when the API is also on Render. Vercel is the other
+  # common option (frontend on Vercel, API on Render) — both work; see README.
+  - type: web
+    name: delhi-grievance-client
+    runtime: node
+    plan: free
+    rootDir: client
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE_URL
+        sync: false        # set to https://delhi-grievance-api.onrender.com/api after the API deploys
+      - key: NODE_VERSION
+        value: 20.18.0
